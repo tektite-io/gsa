@@ -14,6 +14,7 @@ import {FoldState} from 'web/components/folding/Folding';
 import FootNote from 'web/components/footnote/Footnote';
 import FoldStateIcon from 'web/components/icon/FoldStateIcon';
 import Layout from 'web/components/layout/Layout';
+import updatingStyle from 'web/components/layout/updating-style';
 import Pagination from 'web/components/pagination/Pagination';
 import StripedTable from 'web/components/table/StripedTable';
 import TableBody from 'web/components/table/TableBody';
@@ -102,8 +103,8 @@ export interface EntitiesTableProps<
   onSortChange?: (sortBy: string) => void;
 }
 
-const UpdatingStripedTable = styled(StripedTable)<{$isUpdating: boolean}>`
-  opacity: ${props => (props.$isUpdating ? '0.2' : '1.0')};
+const UpdatingStripedTable = styled(StripedTable)<{$isUpdating?: boolean}>`
+  ${updatingStyle}
 `;
 
 const DetailsIcon = styled(FoldStateIcon)`
@@ -312,7 +313,11 @@ function EntitiesTable<
       grow="1"
     >
       {toggleDetailsIcon ? (
-        <Layout align="space-between" grow="1">
+        <Layout
+          align="space-between"
+          data-testid="entities-table-header"
+          grow="1"
+        >
           <DetailsIcon
             // @ts-expect-error
             foldState={allToggled ? FoldState.UNFOLDED : FoldState.FOLDED}
@@ -334,7 +339,7 @@ function EntitiesTable<
         </UpdatingStripedTable>
       </TableWrapper>
       {footnote ? (
-        <Layout align="space-between">
+        <Layout align="space-between" data-testid="entities-table-footer">
           <FootNote>
             {_('(Applied filter: {{- filter}})', {filter: filterString})}
           </FootNote>

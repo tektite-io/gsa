@@ -49,6 +49,14 @@ describe('EditableSettingRow', () => {
     expect(within(row).queryByTitle('Test Label')).toBeNull();
   });
 
+  test('should render info tip when infoMessage is provided', () => {
+    const {render} = rendererWithTableBody(rendererOptions);
+    const info = 'Helpful info';
+    render(<EditableSettingRow {...defaultProps} infoMessage={info} />);
+    const row = screen.getByRole('row');
+    expect(within(row).getByLabelText('More information')).toBeVisible();
+  });
+
   test('should render editComponent and error message in edit mode', () => {
     const errorMessage = 'Something went wrong';
     const {render} = rendererWithTableBody(rendererOptions);
@@ -85,6 +93,21 @@ describe('EditableSettingRow', () => {
 
     fireEvent.click(cancelButton);
     expect(handleCancel).toHaveBeenCalled();
+  });
+
+  test('should call onClear when clear icon is clicked in edit mode', () => {
+    const handleClear = testing.fn();
+    const {render} = rendererWithTableBody(rendererOptions);
+    render(
+      <EditableSettingRow
+        {...defaultProps}
+        isEditMode={true}
+        onClear={handleClear}
+      />,
+    );
+    const row = screen.getByRole('row');
+    fireEvent.click(within(row).getByTitle('Clear'));
+    expect(handleClear).toHaveBeenCalled();
   });
 
   test('should render viewComponent in view mode', () => {

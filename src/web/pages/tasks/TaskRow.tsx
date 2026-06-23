@@ -14,7 +14,16 @@ import {isDefined} from 'gmp/utils/identity';
 import SeverityBar from 'web/components/bar/SeverityBar';
 import Comment from 'web/components/comment/Comment';
 import DateTime from 'web/components/date/DateTime';
-import {AlterableIcon, ProvideViewIcon, SensorIcon} from 'web/components/icon';
+import {
+  AlterableIcon,
+  ProvideViewIcon,
+  SensorIcon,
+  ContainerIcon,
+  HatAndGlassesIcon,
+  ImportIcon,
+  RadarIcon,
+  GlobeIcon,
+} from 'web/components/icon';
 import IconDivider from 'web/components/layout/IconDivider';
 import Layout from 'web/components/layout/Layout';
 import DetailsLink from 'web/components/link/DetailsLink';
@@ -98,6 +107,47 @@ const TaskRow = ({
     group: '',
   };
 
+  const renderTaskTypeIcon = (entity: Task) => {
+    if (entity.isContainerImage()) {
+      return (
+        <ContainerIcon
+          data-testid="container-icon-task-details"
+          size="small"
+          title={_('Container Image Task')}
+        />
+      );
+    }
+    if (entity.isImport()) {
+      return (
+        <ImportIcon
+          data-testid="import-icon-task-details"
+          size="small"
+          title={_('Import Task')}
+        />
+      );
+    }
+    if (entity.isAgent()) {
+      return (
+        <HatAndGlassesIcon
+          data-testid="agent-icon-task-details"
+          size="small"
+          title={_('Agent Task')}
+        />
+      );
+    }
+    if (entity.isWebApplication()) {
+      return (
+        <GlobeIcon
+          data-testid="web-application-icon-task-details"
+          size="small"
+          title={_('Web Application Task')}
+        />
+      );
+    }
+
+    return <RadarIcon size="small" title={_('Task')} />;
+  };
+
   let hasObservers = false;
 
   if (isDefined(observers)) {
@@ -143,6 +193,7 @@ const TaskRow = ({
                   })}
                 />
               )}
+
             <ObserverIcon
               displayName={_('Task')}
               entity={entity}
@@ -164,6 +215,7 @@ const TaskRow = ({
           </IconDivider>
         </Layout>
       </TableData>
+      <TableData>{renderTaskTypeIcon(entity)}</TableData>
       <TableData>
         <TaskStatus links={links} task={entity} />
       </TableData>

@@ -12,9 +12,6 @@ import {
   DEFAULT_DAYS,
   DEFAULT_OID_VALUE,
   MANUAL,
-  RESULT_ANY,
-  RESULT_UUID,
-  TASK_ANY,
 } from 'gmp/models/override';
 import {createSession} from 'gmp/testing';
 import {currentSettingsDefaultResponse} from 'web/pages/__fixtures__/current-settings';
@@ -67,13 +64,13 @@ describe('NoteComponent', () => {
     const hostsRadioInputs = hostsFormGroup.getRadioInputs();
     expect(hostsRadioInputs).toHaveLength(2);
     expect(hostsRadioInputs[0]).toBeChecked();
-    expect(hostsFormGroup.getByName('hosts_manual')).toBeDisabled();
+    expect(hostsFormGroup.getByName('hostsManual')).toBeDisabled();
 
     const locationFormGroup = within(screen.getByTestId('group-location'));
     const locationRadioInputs = locationFormGroup.getRadioInputs();
     expect(locationRadioInputs).toHaveLength(2);
     expect(locationRadioInputs[0]).toBeChecked();
-    expect(screen.getByName('port_manual')).toBeDisabled();
+    expect(screen.getByName('portManual')).toBeDisabled();
 
     const severityFormGroup = within(screen.getByTestId('group-severity'));
     const severityRadioInputs = severityFormGroup.getRadioInputs();
@@ -90,7 +87,7 @@ describe('NoteComponent', () => {
     const resultRadioInputs = resultFormGroup.getRadioInputs();
     expect(resultRadioInputs).toHaveLength(2);
     expect(resultRadioInputs[0]).toBeChecked();
-    expect(resultFormGroup.getByName('result_uuid')).toBeDisabled();
+    expect(resultFormGroup.getByName('resultUuid')).toBeDisabled();
 
     expect(screen.getByName('text')).toHaveValue('');
 
@@ -102,43 +99,47 @@ describe('NoteComponent', () => {
       days: DEFAULT_DAYS,
       fixed: false,
       hosts: ANY,
-      hosts_manual: '',
+      hostsManual: '',
       id: undefined,
       oid: DEFAULT_OID_VALUE,
       port: ANY,
-      port_manual: '',
-      result_id: RESULT_ANY,
-      task_id: TASK_ANY,
+      portManual: '',
+      resultId: ANY,
+      taskId: ANY,
       text: '',
     });
   });
 
-  test('should render create note dialog with initial values', async () => {
+  test('should render fixed create note dialog with initial values', async () => {
     const gmp = createGmp();
     const {render} = rendererWith({gmp});
-    const initial = {
-      active: ACTIVE_YES_FOR_NEXT_VALUE,
-      fixed: true,
-      hosts: MANUAL,
-      hosts_manual: 'host1, host2',
-      nvt_name: 'Test NVT',
-      oid: '1.2.3',
-      port: MANUAL,
-      port_manual: '1234',
-      result_id: RESULT_UUID,
-      result_name: 'Test Result',
-      severity: 9.9,
-      task_id: 'task-1',
-      task_name: 'Task 1',
-      task_uuid: 'task-1',
-      text: 'foo bar',
-    };
 
     render(
       <NoteComponent>
         {({create}) => {
           return (
-            <button data-testid="button" onClick={() => create(initial)}>
+            <button
+              data-testid="button"
+              onClick={() =>
+                create({
+                  active: ACTIVE_YES_FOR_NEXT_VALUE,
+                  fixed: true,
+                  hosts: MANUAL,
+                  hostsManual: 'host1, host2',
+                  nvtName: 'Test NVT',
+                  oid: '1.2.3',
+                  port: MANUAL,
+                  portManual: '1234',
+                  resultId: MANUAL,
+                  resultName: 'Test Result',
+                  severity: 9.9,
+                  taskId: MANUAL,
+                  taskName: 'Task 1',
+                  taskUuid: 'task-1',
+                  text: 'foo bar',
+                })
+              }
+            >
               Create Note
             </button>
           );
@@ -167,15 +168,13 @@ describe('NoteComponent', () => {
     const hostsRadioInputs = hostsFormGroup.getRadioInputs();
     expect(hostsRadioInputs).toHaveLength(2);
     expect(hostsRadioInputs[1]).toBeChecked();
-    expect(hostsFormGroup.getByName('hosts_manual')).toHaveValue(
-      'host1, host2',
-    );
+    expect(hostsFormGroup.getByName('hostsManual')).toHaveValue('host1, host2');
 
     const locationFormGroup = within(screen.getByTestId('group-location'));
     const locationRadioInputs = locationFormGroup.getRadioInputs();
     expect(locationRadioInputs).toHaveLength(2);
     expect(locationRadioInputs[1]).toBeChecked();
-    expect(screen.getByName('port_manual')).toHaveValue('1234');
+    expect(screen.getByName('portManual')).toHaveValue('1234');
 
     const severityFormGroup = within(screen.getByTestId('group-severity'));
     const severityRadioInputs = severityFormGroup.getRadioInputs();
@@ -186,14 +185,14 @@ describe('NoteComponent', () => {
     const taskRadioInputs = taskFormGroup.getRadioInputs();
     expect(taskRadioInputs).toHaveLength(2);
     expect(taskRadioInputs[0]).not.toBeChecked();
-    expect(taskRadioInputs[1]).not.toBeChecked();
+    expect(taskRadioInputs[1]).toBeChecked();
     expect(taskFormGroup.getSelectElement()).toHaveValue('Task 1');
 
     const resultFormGroup = within(screen.getByTestId('group-result'));
     const resultRadioInputs = resultFormGroup.getRadioInputs();
     expect(resultRadioInputs).toHaveLength(2);
     expect(resultRadioInputs[1]).toBeChecked();
-    expect(resultFormGroup.queryByName('result_uuid')).not.toBeInTheDocument();
+    expect(resultFormGroup.queryByName('resultUuid')).not.toBeInTheDocument();
     expect(
       resultFormGroup.getByText('Only selected result (Test Result)'),
     ).toBeInTheDocument();
@@ -208,16 +207,16 @@ describe('NoteComponent', () => {
       days: DEFAULT_DAYS,
       fixed: true,
       hosts: MANUAL,
-      hosts_manual: 'host1, host2',
+      hostsManual: 'host1, host2',
       oid: '1.2.3',
       port: MANUAL,
-      port_manual: '1234',
-      result_id: RESULT_UUID,
-      result_name: 'Test Result',
+      portManual: '1234',
+      resultId: MANUAL,
+      resultName: 'Test Result',
       severity: 9.9,
-      task_id: 'task-1',
-      task_name: 'Task 1',
-      task_uuid: 'task-1',
+      taskId: MANUAL,
+      taskName: 'Task 1',
+      taskUuid: 'task-1',
       text: 'foo bar',
     });
   });

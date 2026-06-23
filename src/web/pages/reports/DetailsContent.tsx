@@ -131,6 +131,8 @@ const PageContent = ({
 
   const isContainerScanning =
     hasReport && isDefined(entity.report?.task?.ociImageTarget?.id);
+  const isWebApplicationScanning =
+    hasReport && isDefined(entity.report?.task?.webApplicationTarget?.id);
   const isAgentScanning =
     hasReport && isDefined(entity.report?.task?.agentGroup?.id);
 
@@ -215,6 +217,7 @@ const PageContent = ({
           isImport,
           isAgentScanning,
           isContainerScanning,
+          isWebApplicationScanning,
           isUpdating,
           progress,
           status,

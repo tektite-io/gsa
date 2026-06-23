@@ -180,6 +180,21 @@ const loggedInRoutes = [
         }),
       },
 
+      {
+        path: 'webapplicationtargets',
+        loader: () => {
+          throw redirect('/web-application-targets');
+        },
+      },
+      {
+        path: 'web-application-targets',
+        lazy: async () => ({
+          Component: (
+            await import('web/pages/web-application-targets/WebApplicationTargetsListPage')
+          ).default,
+        }),
+      },
+
       // CPE routes
       {
         path: 'cpes',
@@ -334,13 +349,13 @@ const loggedInRoutes = [
       {
         path: 'notes',
         lazy: async () => ({
-          Component: (await import('web/pages/notes/ListPage')).default,
+          Component: (await import('web/pages/notes/NoteListPage')).default,
         }),
       },
       {
         path: 'note/:id',
         lazy: async () => ({
-          Component: (await import('web/pages/notes/DetailsPage')).default,
+          Component: (await import('web/pages/notes/NoteDetailsPage')).default,
         }),
       },
 

@@ -38,7 +38,7 @@ import CredentialTable from 'web/pages/credentials/CredentialTable';
 import TrashActions from 'web/pages/extras/TrashActions';
 import FiltersTable from 'web/pages/filters/Table';
 import GroupsTable from 'web/pages/groups/Table';
-import NotesTable from 'web/pages/notes/Table';
+import NotesTable from 'web/pages/notes/NoteTable';
 import OverridesTable from 'web/pages/overrides/Table';
 import PermissionsTable from 'web/pages/permissions/PermissionTable';
 import PoliciesTable from 'web/pages/policies/Table';
@@ -56,6 +56,7 @@ import TicketsTable from 'web/pages/tickets/Table';
 import EmptyTrashButton from 'web/pages/trashcan/EmptyTrashButton';
 import TrashCanPageToolBarIcons from 'web/pages/trashcan/TrashCanPageToolBarIcons';
 import TrashCanTableContents from 'web/pages/trashcan/TrashCanTableContents';
+import WebApplicationTargetTable from 'web/pages/web-application-targets/WebApplicationTargetTable';
 
 interface TrashCanTableProps {
   links?: boolean;
@@ -96,6 +97,9 @@ const TrashCan = () => {
       .get({
         agentGroups: features.featureEnabled('ENABLE_AGENTS'),
         ociImageTargets: features.featureEnabled('ENABLE_CONTAINER_SCANNING'),
+        webApplicationTargets: features.featureEnabled(
+          'ENABLE_WEB_APPLICATION_SCANNING',
+        ),
       })
       .then(
         response => {
@@ -286,6 +290,7 @@ const TrashCan = () => {
           <span>
             <LinkTarget id="note" />
             <h1>{_('Notes')}</h1>
+            {/* @ts-expect-error */}
             <NotesTable entities={trash.notes} {...tableProps} />
           </span>
         )}
@@ -415,6 +420,17 @@ const TrashCan = () => {
             {/* @ts-expect-error */}
             <ContainerImageTargetTable
               entities={trash.ociImageTargets}
+              {...tableProps}
+            />
+          </span>
+        )}
+        {hasEntities(trash?.webApplicationTargets) && (
+          <span>
+            <LinkTarget id="web-application-target" />
+            <h1>{_('Web Application Targets')}</h1>
+            {/* @ts-expect-error */}
+            <WebApplicationTargetTable
+              entities={trash.webApplicationTargets}
               {...tableProps}
             />
           </span>
